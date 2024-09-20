@@ -1,0 +1,6 @@
+.datagridContainer {
+  display: flex;
+  flex-direction: column;
+  max-width: 550px;
+  margin-left: 24px;
+}

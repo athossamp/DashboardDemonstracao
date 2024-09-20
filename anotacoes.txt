@@ -1,0 +1,242 @@
+
+
+	VARIOS CHAMADOS ESTÃO LIGADOS A 1 OCORRENCIA
+	- INSERIR OCORRENCIA:
+	
+	
+}
+  "ococodigo": 0, BANCO AUTOMATICO
+  "ocodescricao": "string" ENVIAR DO FRONT
+  "ocosolucao": "string", ENVIAR DO FRONT
+  "lgrcodigo": 0, BANCO ROTINAS ENVIAR DO FRONT
+  "clicodigo": 0, BANCO CLIENTES ENVIAR DO FRONT
+  "clifuncodigo": 0, BANCO FUNCIONARIO CLIENTES ENVIAR DO FRONT
+  "teccodigo": 0, BANCO TECNICO LOGICOM
+  "tipprocodigo": 0, BANCO TIPO DE PROBLEMA
+  "tipsolcodigo": 0, BANCO TIPO DE SOLUÇÃO
+  "ocostatus": "string", ENVIAR DO FRONT
+  "ocoabertura": "2024-02-26T13:38:05.587Z", AUTOMATICO
+  "ocofechamento": "2024-02-26T13:38:05.587Z", AUTOMATICO 
+  "ocodesenvolvimento": "string", ENVIAR DO FRONT
+  "inclusao": "2024-02-26T13:38:05.587Z", AUTOMATICO
+  "inclusaoUsucodigo": 0, BANCO USUARIO
+  "ultatualizacao": "2024-02-26T13:38:05.587Z", AUTOMATICO
+  "usucodigo": 0 BANCO USUARIO
+}
+
+ "ocodescricao": "string" ENVIAR DO FRONT [OK]
+  "ocosolucao": "string", ENVIAR DO FRONT [OK]
+  "clicodigo": 0, BANCO CLIENTES ENVIAR DO FRONT [OK]
+  "clifuncodigo": 0, BANCO FUNCIONARIO CLIENTES ENVIAR DO FRONT [OK]
+  "lgrcodigo": 0, BANCO ROTINAS ENVIAR DO FRONT [FALTA SISSEG]
+    "ocostatus": "string", ENVIAR DO FRONT [DEFAULT ABERTO "A"]
+    "ocodesenvolvimento": "string", ENVIAR DO FRONT
+  
+		- Descrição da ocorrencia
+		- Solução da ocorrencia
+		- Código do cliente (fazer no select menu buscar o nome do funcionário e no value colocar o codigo dele)
+		- Código do funcionário do cliente (vai vir de banco, encontrar uma forma de fazer com que o select traga apenas de clientes do tal lugar [usar clicodigo, alterar via useState?])
+			- INSERIR CHAMADO:
+				- Ao clicar em criar ocorrencia (CRIAR O BOTÃO CRIAR OCORRENCIA), preencher todos os chamados com o valor que virá da ocorrencia via useEffect
+				
+				
+	Abrir ocorrencia
+		- Salvar o valor do ococodigo
+		
+	Abrir chamado
+		- Outra pagina busca o valor atual do ococodigo e seta o valor do insertChamado com o ococodigo atual
+		- Nesta pagina busca o valor do ococodigo e leva para enviar o anexo da ocorrencia.
+		- Abre multiplos chamados na mesma pagina
+		- Levar botão de finalizar ocorrencia pra pagina de chamados
+			-> botão irá remover o dado de ocorrencia criado
+		
+	
+	O QUE TA FALTANDO:
+	
+	[API COM PROBLEMA: ocorrencia/getOcorrencia retornando ocostatus null.] (datagrid com espaço de ocostatus vazio)
+	[API COM PROBLEMA: ocorrencia/updateOcorrencia retornando erro 500.]
+	[API COM PROBLEMA: ocorrencia/getOcorrencia retornando ocostatus null.]
+	[API COM PROBLEMA: chamado/getChamados retornando erro 500.]
+	[API COM PROBLEMA: ocorrencia/insertOcorrenciaXTecnico erro 500.]
+	https://mui.com/x/react-data-grid/filtering/quick-filter/ VERIFICAR O QUICKFILTER para a tabela de ocorrencia
+		INSERT:
+		Pegar o tipo de funcionário (PEGAR DO BANCO TABELA FUNÇÃO FUNTIPO) para insert na ocorrenciaxtecnico  [SAAAAAL] (via /funcao/getFuncoes [ERRO 500] /funcao/getFuncaoByFuncodigo [OK 200])
+			-> fazer esse insert direto na hora de fazaer o insert de ocorrencia (insertOcorrenciaXTecnico [ERRO 500])
+		SELECT:
+		[API COM PROBLEMA: ocorrencia/getOcorrencia retornando ocostatus null.] (datagrid com espaço de ocostatus vazio)
+		Pegar todas as ocorrencias abertas e dividir entre abertas, finalizadas e em andamento
+		
+		Criar uma tabela com todas as ocorrencias e adicionar um filtro para numero das rotinas (https://mui.com/x/react-data-grid/filtering/)
+		UPDATE:
+		
+		Tela de update de ocorrencia (pra alterar se ja foi finalizada ou não)
+		[API COM PROBLEMA: ocorrencia/updateOcorrencia retornando erro 500.]
+		[API COM PROBLEMA: ocorrencia/getOcorrencia retornando ocostatus null.]
+			- Criar uma pagina com todas as ocorrencias em tabela (data grid com filtro)
+			- Adicionar botão com link que redireciona para a pagina UpdateOcorrencia?getOcorrenciaByOcocodigo=${valorOcocodigo}
+			- 
+		CRIAR TELA DE UPDATE DE CHAMADO (pedir para criar api que busque chamadoByOcocodigo [ja solicitada])
+		ESTILIZAR:
+			- UpdateOcorrencia
+			- Chamado
+			- UpdateChamado(nao existe ainda)
+			
+			o q ta faltando
+				- Tela de monitoramento de chamado e ocorrencia (adicionar data grid e adicionar a hora)
+				- Tela de chamados (adicionar ela na tela de editar a ocorrencia?) [falta api]
+			
+			
+			AJEITAR AMANHÃ:
+				OCOFECHAMENTO
+				CHAFECHAMENTO 
+				que n ta sendo enviado
+				
+				
+
+
+
+
+PRE ALTERAÇÃO (
+CREATE OR REPLACE FUNCTION public.update_chamado(p_chacodigo integer, p_ococodigo integer, p_chafechamento timestamp without time zone, p_chastatus character, p_teccodigo integer, p_usucodigo integer, p_inclusao_usucodigo integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    updated_chacodigo int;
+begin
+	updated_chacodigo = 0;
+
+    UPDATE public.chamado
+    SET ococodigo = p_ococodigo,
+        chafechamento = p_chafechamento,
+        chastatus = p_chastatus,
+        teccodigo = p_teccodigo,
+        usucodigo = p_usucodigo,
+        inclusao_usucodigo = p_inclusao_usucodigo,
+        ultatualizacao = NOW()
+    WHERE chacodigo = p_chacodigo
+    RETURNING chacodigo INTO updated_chacodigo;
+    
+    RETURN updated_chacodigo;
+END;
+$function$
+;
+)
+PÓS ALTERAÇÃO (
+				CREATE OR REPLACE FUNCTION public.update_chamado(
+    p_chacodigo integer, 
+    p_ococodigo integer, 
+    p_chafechamento timestamp without time zone, 
+    p_chastatus character, 
+    p_teccodigo integer, 
+    p_usucodigo integer, 
+    p_inclusao_usucodigo integer
+)
+RETURNS integer
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    updated_chacodigo int;
+BEGIN
+    updated_chacodigo := 0;
+
+    IF p_chastatus = 'F' THEN
+        p_chafechamento := NOW();
+    END IF;
+
+    UPDATE public.chamado
+    SET ococodigo = p_ococodigo,
+        chafechamento = p_chafechamento,
+        chastatus = p_chastatus,
+        teccodigo = p_teccodigo,
+        usucodigo = p_usucodigo,
+        inclusao_usucodigo = p_inclusao_usucodigo,
+        ultatualizacao = NOW()
+    WHERE chacodigo = p_chacodigo
+    RETURNING chacodigo INTO updated_chacodigo;
+
+    RETURN updated_chacodigo;
+END;
+$function$;
+)
+
+PRÉ ALTERAÇÃO (
+CREATE OR REPLACE FUNCTION public.update_ocorrencia(p_ococodigo integer, p_ocodescricao character varying, p_ocosolucao character varying, p_lgrcodigo integer, p_clicodigo integer, p_clifuncodigo integer, p_teccodigo integer, p_tipprocodigo integer, p_tipsolcodigo integer, p_ocostatus character varying, p_ocofechamento timestamp without time zone, p_ocodesenvolvimento character, p_inclusao_usucodigo integer, p_usucodigo integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    updated_ococodigo int;
+BEGIN
+    UPDATE public.ocorrencia
+    SET ocodescricao = p_ocodescricao,
+        ocosolucao = p_ocosolucao,
+        lgrcodigo = p_lgrcodigo,
+        clicodigo = p_clicodigo,
+        clifuncodigo = p_clifuncodigo,
+        teccodigo = p_teccodigo,
+        tipprocodigo = p_tipprocodigo,
+        tipsolcodigo = p_tipsolcodigo,
+        ocostatus = p_ocostatus,
+        ocofechamento = p_ocofechamento,
+        ocodesenvolvimento = p_ocodesenvolvimento,
+        inclusao_usucodigo = p_inclusao_usucodigo,
+        ultatualizacao = NOW(),
+        usucodigo = p_usucodigo
+    WHERE ococodigo = p_ococodigo
+    RETURNING ococodigo INTO updated_ococodigo;
+
+    RETURN updated_ococodigo;
+END;
+$function$
+;
+)
+PÓS ALTERAÇÃO(
+CREATE OR REPLACE FUNCTION public.update_ocorrencia(
+    p_ococodigo integer, 
+    p_ocodescricao character varying, 
+    p_ocosolucao character varying, 
+    p_lgrcodigo integer, 
+    p_clicodigo integer, 
+    p_clifuncodigo integer, 
+    p_teccodigo integer, 
+    p_tipprocodigo integer, 
+    p_tipsolcodigo integer, 
+    p_ocostatus character varying, 
+    p_ocofechamento timestamp without time zone, 
+    p_ocodesenvolvimento character, 
+    p_inclusao_usucodigo integer, 
+    p_usucodigo integer
+)
+RETURNS integer
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+    updated_ococodigo int;
+BEGIN
+    IF p_ocostatus = 'F' THEN
+        p_ocofechamento := NOW();
+    END IF;
+
+    UPDATE public.ocorrencia
+    SET ocodescricao = p_ocodescricao,
+        ocosolucao = p_ocosolucao,
+        lgrcodigo = p_lgrcodigo,
+        clicodigo = p_clicodigo,
+        clifuncodigo = p_clifuncodigo,
+        teccodigo = p_teccodigo,
+        tipprocodigo = p_tipprocodigo,
+        tipsolcodigo = p_tipsolcodigo,
+        ocostatus = p_ocostatus,
+        ocofechamento = p_ocofechamento,
+        ocodesenvolvimento = p_ocodesenvolvimento,
+        inclusao_usucodigo = p_inclusao_usucodigo,
+        ultatualizacao = NOW(),
+        usucodigo = p_usucodigo
+    WHERE ococodigo = p_ococodigo
+    RETURNING ococodigo INTO updated_ococodigo;
+
+    RETURN updated_ococodigo;
+END;
+$function$;
+)

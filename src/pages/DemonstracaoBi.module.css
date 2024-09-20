@@ -1,0 +1,35 @@
+.chartsContainer {
+  padding: 0 128px;
+  border-radius: 8px;
+}
+.orcamentoPorLoja {
+  padding: 24px;
+  width: 100%;
+  color: white;
+  margin: 0 64px;
+  font-family: "Nunito";
+}
+.faturamentoPrevistoReal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.faturamentoPrevistoRealGrid {
+  padding: 24px;
+  height: 100%;
+}
+.orcamentoPlanoDeContaContainer {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Nunito";
+}
+.orcamentoPlanoDeContaContainer h2 {
+  margin: 24px;
+}
+.orcamentoPlanoDeConta {
+  max-width: 100%;
+  padding: 24px;
+}

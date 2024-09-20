@@ -1,0 +1,19 @@
+.charts {
+  display: flex;
+  align-items: center;
+}
+
+.doughContainer {
+  background-color: #27292e;
+  border-radius: 24px;
+  margin: 0 24px;
+  height: 40rem;
+  width: 35rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.seletorEmpresa {
+  max-width: 256px;
+  margin: 0 24px;
+}
